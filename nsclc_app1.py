@@ -7,7 +7,7 @@ import numpy as np
 app = Flask(__name__)
 
 # Load the pre-trained model
-model = load_model('path_to_your_model.h5')
+model = load_model('best_model.h5')
 
 # Define the target size for your model's input
 img_size = (224, 224)
