@@ -1,9 +1,10 @@
-import keras
+import tensorflow as tf 
 import numpy as np
+import os  # Add this import statement
 from flask import Flask, render_template, request, jsonify
-from keras.models import load_model
-from keras.preprocessing import image
-from keras.applications.mobilenet_v2 import preprocess_input
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
 app = Flask(__name__)
 
