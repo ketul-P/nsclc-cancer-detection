@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lung Diagonsis</title>
+    <style>
+        body {
+            font-family: Montserrat, sans-serif;
+            text-align: center;
+            margin: 50px;
+            color: darkgray;
+        }
+
+        #imageContainer {
+            width: 300px;
+            height: 300px;
+            border: 1px solid #ccc;
+            margin: 20px auto;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #output {
+            margin-top: 20px;
+        }
+
+        #buttons {
+            margin-top: 20px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        label {
+            display: inline-block;
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        input[type="file"]+label {
+            margin-bottom: 10px;
+        }
+
+        input[type="file"]:disabled+label {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Lung Diagnosis</h1>
+
+    <h3>Please upload patient's CT scan</h3>
+
+    <form id="imageForm" enctype="multipart/form-data">
+        <label for="imageInput">Choose File</label>
+        <input type="file" id="imageInput" accept="image/*" onchange="displayImage()">
+          
+        <div id="imageContainer">
+            <p>No image selected.</p>
+        </div>
+
+        <div id="buttons">
+            <button type="button" onclick="clearImage()" disabled>Clear Image</button>
+            <button type="button" onclick="performDiagnosis()" disabled>Perform Diagnosis</button>
+        </div>
+
+        <div id="output"></div>
+    </form>
+
+    <script>
+        function displayImage() {
+            var input = document.getElementById('imageInput');
+            var container = document.getElementById('imageContainer');
+            var output = document.getElementById('output');
+            var clearBtn = document.querySelector('#buttons button:first-of-type');
+            var performBtn = document.querySelector('#buttons button:last-of-type');
+
+            output.innerHTML = '';
+
+            if (input.files.length > 0) {
+                var file = input.files[0];
+
+                container.style.backgroundImage = 'url(' + URL.createObjectURL(file) + ')';
+                container.style.backgroundSize = 'cover';
+                container.style.backgroundPosition = 'center';
+
+                var details = document.createElement('p');
+                details.innerHTML = '<strong>File Details:</strong><br>' +
+                    'Name: ' + file.name + '<br>' +
+                    'Type: ' + file.type + '<br>' +
+                    'Size: ' + (file.size / 1024).toFixed(2) + ' KB';
+                output.appendChild(details);
+
+                clearBtn.removeAttribute('disabled');
+                performBtn.removeAttribute('disabled');
+            } else {
+                container.style.backgroundImage = '';
+                output.innerHTML = '<p>No image selected.</p>';
+
+                clearBtn.setAttribute('disabled', 'true');
+                performBtn.setAttribute('disabled', 'true');
+            }
+        }
+
+        function clearImage() {
+            var container = document.getElementById('imageContainer');
+            container.style.backgroundImage = '';
+            document.getElementById('output').innerHTML = '<p>No image selected.</p>';
+        }
+
+        function performDiagnosis() {
+            alert('Performing diagnosis!');
+        }
+    </script>
+</body>
+
+</html>
