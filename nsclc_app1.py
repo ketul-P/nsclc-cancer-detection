@@ -60,16 +60,16 @@ def home():
                 fh.write(myimage)
 
             predictions = make_predictions(os.path.join(app.config['UPLOAD_FOLDER'], "imageFetched.jpeg"))
-            return render_template('home.html', filename="imageFetched.jpeg", message=predictions, show=True)
+            return render_template('index.html', filename="imageFetched.jpeg", message=predictions, show=True)
 
         elif request.files['img'] != '':
             f = request.files['img']
             filename = 'uploaded_image.jpeg'
             f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             predictions = make_predictions(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return render_template('home.html', filename=filename, message=predictions, show=True)
+            return render_template('index.html', filename=filename, message=predictions, show=True)
 
-    return render_template('home.html', filename='unnamed.png')
+    return render_template('index.html', filename='unnamed.png')
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
