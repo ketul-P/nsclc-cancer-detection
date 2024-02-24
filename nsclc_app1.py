@@ -15,7 +15,7 @@ UPLOAD_FOLDER = 'static'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Define the target size for your model's input
-img_size = (224, 224)
+img_size = (256, 256)
 
 # Function to preprocess the image before feeding it to the model
 def preprocess_image(img_path):
@@ -31,12 +31,18 @@ def make_predictions(img_path):
     '''
     processed_img = preprocess_image(img_path)
     predictions = model.predict(processed_img)
-    prediction = int(np.argmax(predictions))  # Assuming it's a classification task
+    prediction = int(np.argmax(predictions))  
 
-    if prediction == 1:  # Adjust this condition based on your model output
-        result = "Positive"
+    if prediction == 0:  
+        result = "Adenocarcinoma"
+    elif prediction == 1:
+        result = "Large Cell Carcinoma"
+    elif prediction == 3:  # Corrected index for "Pneumonia"
+        result = "Pneumonia"
+    elif prediction == 4:  # Corrected index for "Squamous Cell Carcinoma"
+        result = "Squamous Cell Carcinoma"
     else:
-        result = "Negative"
+        result = "Normal"
 
     return result
 
