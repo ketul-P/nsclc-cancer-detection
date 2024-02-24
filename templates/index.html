@@ -74,6 +74,7 @@
             border-radius: 5px;
             margin: 5px;
         }
+        
     </style>
 </head>
 
@@ -82,7 +83,7 @@
 
     <h3>Please upload patient's CT scan</h3>
 
-    <form id="imageForm" enctype="multipart/form-data">
+    <form action="/" method="post" id="imageForm" enctype="multipart/form-data">
         <label for="imageInput">Choose File</label>
         <input type="file" id="imageInput" accept="image/*" onchange="displayImage()">
           
@@ -96,10 +97,10 @@
         </div>
 
         <div id="output">
-            <h2>Prediction Result:</h2>
-            <p>{{ message }}</p>
-            <img src="{{ url_for('static', filename=filename) }}" alt="Uploaded Image">
+        	<h2>Prediction Result:</h2>
+        	<p id="predictionMessage">{{ message }}</p>
         </div>
+        
     </form>
 
     <script>
@@ -134,11 +135,39 @@
             var container = document.getElementById('imageContainer');
             var imageSts = document.getElementById('imageStatus');
             container.style.backgroundImage = '';
+  
             imageSts.textContent = "No image selected";
         }
 
         function performDiagnosis() {
             alert('Performing diagnosis!');
+            var input = document.getElementById('imageInput');
+            var predictionMessage = document.getElementById('predictionMessage');
+            var formData = new FormData();
+
+            if (input.files.length > 0) {
+                formData.append('img', input.files[0]);
+
+                // Disable the button to prevent multiple submissions during the request
+                var performBtn = document.querySelector('#buttons button:last-of-type');
+                performBtn.setAttribute('disabled', 'true');
+
+                // Perform AJAX request to Flask endpoint
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+
+                        // Update the result dynamically
+                        
+
+                        // Enable the button after the request is processed
+                        performBtn.removeAttribute('disabled');
+                    }
+                };
+                xhr.send(formData);
+            }
         }
     </script>
 </body>
