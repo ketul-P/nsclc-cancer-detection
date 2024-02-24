@@ -8,7 +8,7 @@ import base64
 import requests
 
 app = Flask(__name__, template_folder='templates')
-model_file = "best_model.h5"
+model_file = "best_model.keras"
 model = load_model(model_file)
 
 UPLOAD_FOLDER = 'static'
