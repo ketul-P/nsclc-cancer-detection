@@ -95,7 +95,11 @@
             <button type="button" name="performDiagnosis" onclick="performDiagnosis()" disabled>Perform Diagnosis</button>
         </div>
 
-        <div id="output"></div>
+        <div id="output">
+            <h2>Prediction Result:</h2>
+            <p>{{ message }}</p>
+            <img src="{{ url_for('static', filename=filename) }}" alt="Uploaded Image">
+        </div>
     </form>
 
     <script>
