@@ -1,11 +1,9 @@
 import os
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 import numpy as np
-import base64
-import requests
 
 app = Flask(__name__, template_folder='templates')
 model_file = "best_model.keras"
@@ -31,9 +29,9 @@ def make_predictions(img_path):
     '''
     processed_img = preprocess_image(img_path)
     predictions = model.predict(processed_img)
-    prediction = int(np.argmax(predictions))  
+    prediction = int(np.argmax(predictions))
 
-    if prediction == 0:  
+    if prediction == 0:
         result = "Adenocarcinoma"
     elif prediction == 1:
         result = "Large Cell Carcinoma"
@@ -49,31 +47,13 @@ def make_predictions(img_path):
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-        if request.form['phoneNumber'] != "":
-            phonenumber = request.form['phoneNumber']
-            dictToSend = {
-                'phoneNumber': phonenumber,
-                'recordType': 'Your_Record_Type'
-            }
-            # Adjust the URL and payload based on your API requirements
-            res = requests.post('https://your-api-endpoint', json=dictToSend)
-            dictFromServer = res.json()
-            
-            img_data = dictFromServer['success'][0]['file']['buffer']
-            myimage = base64.b64decode(img_data)
-
-            with open(os.path.join(app.config['UPLOAD_FOLDER'], "imageFetched.jpeg"), "wb") as fh:
-                fh.write(myimage)
-
-            predictions = make_predictions(os.path.join(app.config['UPLOAD_FOLDER'], "imageFetched.jpeg"))
-            return render_template('index.html', filename="imageFetched.jpeg", message=predictions, show=True)
-
-        elif request.files['img'] != '':
-            f = request.files['img']
-            filename = 'uploaded_image.jpeg'
-            f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            predictions = make_predictions(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return render_template('index.html', filename=filename, message=predictions, show=True)
+        if 'performDiagnosis' in request.form:
+            if 'img' in request.files and request.files['img'].filename != '':
+                f = request.files['img']
+                filename = 'uploaded_image.jpeg'
+                f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                predictions = make_predictions(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                return render_template('index.html', filename=filename, message=predictions, show=True)
 
     return render_template('index.html', filename='unnamed.png')
 
