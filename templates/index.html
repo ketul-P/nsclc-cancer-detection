@@ -93,7 +93,7 @@
 
         <div id="buttons">
             <button type="button" onclick="clearImage()" disabled>Clear Image</button>
-            <button type="button" name="performDiagnosis" onclick="performDiagnosis()" disabled>Perform Diagnosis</button>
+            <button type="button" name="perform_Diagnosis" onclick="performDiagnosis()" disabled>Perform Diagnosis</button>
         </div>
 
         <div id="output">
@@ -144,6 +144,8 @@
 
         function performDiagnosis() {
             alert('Performing diagnosis!');
+            performBtn.setAttribute('disabled', 'true');
+
             var input = document.getElementById('imageInput');
             var predictionMessage = document.getElementById('predictionMessage');
             var formData = new FormData();
@@ -153,8 +155,7 @@
 
                 // Disable the button to prevent multiple submissions during the request
                 var performBtn = document.querySelector('#buttons button:last-of-type');
-                performBtn.setAttribute('disabled', 'true');
-
+                
                 // Perform AJAX request to Flask endpoint
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/');

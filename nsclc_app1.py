@@ -47,7 +47,7 @@ def make_predictions(img_path):
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-        if 'performDiagnosis' in request.form:
+        if 'perform_Diagnosis' in request.form:
             if 'img' in request.files and request.files['img'].filename != '':
                 f = request.files['img']
                 filename = 'uploaded_image.jpeg'
