@@ -83,7 +83,7 @@
 
     <h3>Please upload patient's CT scan</h3>
 
-    <form action="/predict" method="post" id="imageForm" enctype="multipart/form-data">
+    <form action="/" method="post" id="imageForm" enctype="multipart/form-data">
         <label for="imageInput">Choose File</label>
         <input type="file" name="img" id="imageInput" accept="image/*" onchange="displayImage()">
           
@@ -93,10 +93,7 @@
 
         <div id="buttons">
             <button type="button" onclick="clearImage()" disabled>Clear Image</button>
-            <button type="button" name="perform_Diagnosis" disabled>Perform Diagnosis</button>
-            {% if prediction %}
-                <p class="text-center"> Image is a {{prediction}}</p>
-            {% endif %}
+            <button type="button" name="perform_Diagnosis" onclick="performDiagnosis()" >Perform Diagnosis</button>
         </div>
 
         <div id="output">
@@ -106,7 +103,6 @@
             <script>document.getElementById('predictionMessage').textContent = "{{ message }}";</script>
 
         </div>
-        
     </form>
 
     <script>
@@ -148,38 +144,6 @@
         function performDiagnosis() {
             alert('Performing diagnosis!');
 
-            var input = document.getElementById('imageInput');
-            var predictionMessage = document.getElementById('predictionMessage');
-            var formData = new FormData();
-
-            if (input.files.length > 0) {
-                formData.append('img', input.files[0]);
-
-                // Disable the button to prevent multiple submissions during the request
-                var performBtn = document.querySelector('#buttons button:last-of-type');
-                
-                // Perform AJAX request to Flask endpoint
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/');
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        
-                        var response = JSON.parse(xhr.responseText);
-
-                        // Update the result dynamically
-                        predictionMessage.textContent = "Prediction Result: " + response.message;
-                        
-                        console.log(response);
-                        console.log(response.message);
-
-                        // Enable the button after the request is processed
-                        performBtn.removeAttribute('disabled');
-                    }
-                };
-
-
-                xhr.send(formData);
-            }
         }
     </script>
 </body>

@@ -44,18 +44,35 @@ def make_predictions(img_path):
 
     return result
 
-@app.route('/', methods=[GET])
+@app.route('/', methods=['GET'])
 def home():
     return render_template('index.html')
 
-@app.route('/predict', methods=['POST'])
+@app.route('/', methods=['POST'])
 def predict():
-    if request.method == 'POST':
+    try:
         f = request.files['img']
-        filename = 'uploaded_image.jpeg'
-        f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        predictions = make_predictions(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return render_template('index.html', message=predictions, show=True)
+        
+        # Check if the file is an allowed type (you might want to customize this)
+        if f and f.filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+            filename = 'uploaded_image.jpeg'
+            f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            
+            predictions = make_predictions(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            if predictions is None:
+                message = "No image"
+            else:
+                message = predictions
+
+        else:
+            message = "Invalid file type. Please upload a valid image."
+
+    except Exception as e:
+        message = f"An error occurred: {str(e)}"
+
+    return render_template('index.html', message=message, show=True)
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
