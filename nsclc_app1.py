@@ -44,22 +44,18 @@ def make_predictions(img_path):
 
     return result
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=[GET])
 def home():
+    return render_template('index.html')
+
+@app.route('/predict', methods=['POST'])
+def predict():
     if request.method == 'POST':
-        if 'perform_Diagnosis' in request.form:
-            if 'img' in request.files and request.files['img'].filename != '':
-                f = request.files['img']
-                filename = 'uploaded_image.jpeg'
-                f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                predictions = make_predictions(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                return render_template('index.html', filename=filename, message=predictions, show=True)
-
-            # Image not received, show error message
-            error_message = "Error: No image received."
-            return render_template('index.html', error_message=error_message)
-
-    return render_template('index.html', filename='unnamed.png')
+        f = request.files['img']
+        filename = 'uploaded_image.jpeg'
+        f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        predictions = make_predictions(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return render_template('index.html', message=predictions, show=True)
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
