@@ -161,13 +161,14 @@
                 xhr.open('POST', '/');
                 xhr.onload = function () {
                     if (xhr.status === 200) {
-                        console.log(response);
-                        console.log(response.message);
+                        
                         var response = JSON.parse(xhr.responseText);
 
                         // Update the result dynamically
                         predictionMessage.textContent = "Prediction Result: " + response.message;
-
+                        
+                        console.log(response);
+                        console.log(response.message);
 
                         // Enable the button after the request is processed
                         performBtn.removeAttribute('disabled');

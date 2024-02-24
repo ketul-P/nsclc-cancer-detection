@@ -55,6 +55,10 @@ def home():
                 predictions = make_predictions(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 return render_template('index.html', filename=filename, message=predictions, show=True)
 
+            # Image not received, show error message
+            error_message = "Error: No image received."
+            return render_template('index.html', error_message=error_message)
+
     return render_template('index.html', filename='unnamed.png')
 
 if __name__ == "__main__":
