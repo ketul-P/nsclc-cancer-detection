@@ -99,6 +99,9 @@
         <div id="output">
         	<h2>Prediction Result:</h2>
         	<p id="predictionMessage">{{ message }}</p>
+
+            <script>document.getElementById('predictionMessage').textContent = "{{ message }}";</script>
+
         </div>
         
     </form>
