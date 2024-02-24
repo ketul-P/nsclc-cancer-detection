@@ -160,7 +160,8 @@
                         var response = JSON.parse(xhr.responseText);
 
                         // Update the result dynamically
-                        
+                        predictionMessage.textContent = "Prediction Result: " + response.message;
+
 
                         // Enable the button after the request is processed
                         performBtn.removeAttribute('disabled');
