@@ -7,16 +7,17 @@
     <title>Lung Diagonsis</title>
     <style>
         body {
-            font-family: Montserrat, sans-serif;
+            font-family: sans-serif;
             text-align: center;
             margin: 50px;
             color: darkgray;
         }
 
         #imageContainer {
-            width: 300px;
-            height: 300px;
+            width: 384px;
+            height: 384px;
             border: 1px solid #ccc;
+           	border-radius: 15px;
             margin: 20px auto;
             overflow: hidden;
             background-size: cover;
@@ -63,6 +64,8 @@
         }
 
         button {
+        	height:40px;
+            width: 150px;
             padding: 10px;
             background-color: #3498db;
             color: #fff;
@@ -84,7 +87,7 @@
         <input type="file" id="imageInput" accept="image/*" onchange="displayImage()">
           
         <div id="imageContainer">
-            <p>No image selected.</p>
+            <p id="imageStatus">No image selected.</p>
         </div>
 
         <div id="buttons">
@@ -102,29 +105,22 @@
             var output = document.getElementById('output');
             var clearBtn = document.querySelector('#buttons button:first-of-type');
             var performBtn = document.querySelector('#buttons button:last-of-type');
-
-            output.innerHTML = '';
+            var imageSts = document.getElementById('imageStatus');
 
             if (input.files.length > 0) {
                 var file = input.files[0];
-
+				
                 container.style.backgroundImage = 'url(' + URL.createObjectURL(file) + ')';
                 container.style.backgroundSize = 'cover';
                 container.style.backgroundPosition = 'center';
-
-                var details = document.createElement('p');
-                details.innerHTML = '<strong>File Details:</strong><br>' +
-                    'Name: ' + file.name + '<br>' +
-                    'Type: ' + file.type + '<br>' +
-                    'Size: ' + (file.size / 1024).toFixed(2) + ' KB';
-                output.appendChild(details);
-
+                
+                imageSts.textContent = "";
+                
                 clearBtn.removeAttribute('disabled');
                 performBtn.removeAttribute('disabled');
             } else {
                 container.style.backgroundImage = '';
-                output.innerHTML = '<p>No image selected.</p>';
-
+             
                 clearBtn.setAttribute('disabled', 'true');
                 performBtn.setAttribute('disabled', 'true');
             }
@@ -132,8 +128,9 @@
 
         function clearImage() {
             var container = document.getElementById('imageContainer');
+            var imageSts = document.getElementById('imageStatus');
             container.style.backgroundImage = '';
-            document.getElementById('output').innerHTML = '<p>No image selected.</p>';
+            imageSts.textContent = "No image selected";
         }
 
         function performDiagnosis() {
