@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lung Diagonsis</title>
+    <title>Lung Diagnosis</title>
     <style>
         body {
             font-family: sans-serif;
@@ -17,7 +17,7 @@
             width: 384px;
             height: 384px;
             border: 1px solid #ccc;
-           	border-radius: 15px;
+            border-radius: 15px;
             margin: 20px auto;
             overflow: hidden;
             background-size: cover;
@@ -49,22 +49,8 @@
             margin-top: 10px;
         }
 
-        input[type="file"]+label {
-            margin-bottom: 10px;
-        }
-
-        input[type="file"]:disabled+label {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-        }
-
-        button:disabled {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-        }
-
         button {
-        	height:40px;
+            height: 40px;
             width: 150px;
             padding: 10px;
             background-color: #3498db;
@@ -74,78 +60,83 @@
             border-radius: 5px;
             margin: 5px;
         }
-        
+
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
     </style>
 </head>
 
 <body>
     <h1>Lung Diagnosis</h1>
 
-    <h3>Please upload patient's CT scan</h3>
-
-    <form action="/" method="post" id="imageForm" enctype="multipart/form-data">
-        <label for="imageInput">Choose File</label>
-        <input type="file" name="img" id="imageInput" accept="image/*" onchange="displayImage()">
-          
-        <div id="imageContainer">
-            <p id="imageStatus">No image selected.</p>
-        </div>
-
-        <div id="buttons">
-            <button type="button" onclick="clearImage()" disabled>Clear Image</button>
-            <button type="button" name="perform_Diagnosis" onclick="performDiagnosis()" >Perform Diagnosis</button>
-        </div>
-
-        <div id="output">
-        	<h2>Prediction Result:</h2>
-        	<p id="predictionMessage">{{ message }}</p>
-
-            <script>document.getElementById('predictionMessage').textContent = "{{ message }}";</script>
-
-        </div>
-    </form>
+    <h3>Please upload the patient's CT scan</h3>
 
     <script>
-        function displayImage() {
+   
+         function displayImage() {
             var input = document.getElementById('imageInput');
             var container = document.getElementById('imageContainer');
-            var output = document.getElementById('output');
-            var clearBtn = document.querySelector('#buttons button:first-of-type');
-            var performBtn = document.querySelector('#buttons button:last-of-type');
-            var imageSts = document.getElementById('imageStatus');
 
             if (input.files.length > 0) {
                 var file = input.files[0];
-				
+
                 container.style.backgroundImage = 'url(' + URL.createObjectURL(file) + ')';
                 container.style.backgroundSize = 'cover';
                 container.style.backgroundPosition = 'center';
-                
-                imageSts.textContent = "";
-                
-                clearBtn.removeAttribute('disabled');
-                performBtn.removeAttribute('disabled');
+                disableButtons(false);
+
             } else {
                 container.style.backgroundImage = '';
-             
-                clearBtn.setAttribute('disabled', 'true');
-                performBtn.setAttribute('disabled', 'true');
+                disableButtons(true);
+            }
+        }
+
+        function disableButtons(boolVal) {
+            var clearImageBtn = document.getElementById('clearImage');
+            var performDiagnosisBtn = document.getElementById('performDiagnosis');
+
+            clearImageBtn.setAttribute('disabled', boolVal);
+            performDiagnosisBtn.setAttribute('disabled', boolVal);
+
+            if (boolVal) {
+                document.getElementById('imageStatus').textContent = "No image selected";
             }
         }
 
         function clearImage() {
             var container = document.getElementById('imageContainer');
-            var imageSts = document.getElementById('imageStatus');
             container.style.backgroundImage = '';
-  
-            imageSts.textContent = "No image selected";
+            disableButtons(true);
         }
 
         function performDiagnosis() {
             alert('Performing diagnosis!');
-
+            // You may add further functionality for diagnosis here
         }
     </script>
+
+    <form action="/" method="post" id="imageForm" enctype="multipart/form-data">
+        <label for="imageInput">Choose File</label>
+        <input type="file" name="img" id="imageInput" accept="image/*" onchange="displayImage()">
+
+        <div id="imageContainer">
+            <p id="imageStatus">No image selected.</p>
+        </div>
+
+        <div id="buttons">
+            <button type="button" id="clearImage" disabled>Clear Image</button>
+            <button type="button" id="performDiagnosis" name="perform_Diagnosis" disabled>Perform Diagnosis</button>
+        </div>
+
+        <div id="output">
+            <h2>Prediction Result:</h2>
+            <span id="predictionMessage">{{ message }}</span>
+        </div>
+    </form>
+
 </body>
 
 </html>
