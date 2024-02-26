@@ -50,7 +50,7 @@ def makePredictions(img_path):
 
     return result
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['GET', 'POST'])
 def home():
     # Check if the 'img' field is present in the request
     if request.files['img'] != "":
