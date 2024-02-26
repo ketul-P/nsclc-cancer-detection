@@ -56,8 +56,7 @@ def home():
     if(request.method=='POST'):
         # Check if the 'img' field is present in the request
         if request.files['img'] != "":
-            img_file = base64.b64decode(request.files['img'])
-
+            img_file = request.files['img']
             # Save the image to the static folder
             filename = img_file.filename
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -66,8 +65,10 @@ def home():
             # Perform predictions
             predictions = makePredictions(os.path.join(app.config['UPLOAD_FOLDER'],filename))
 
+            render_template('home.html',filename=img_file.filename,message=predictions,show=True)
             return jsonify({'message': predictions, 'show': True})
 
+        render_template('home.html',filename="unnamed.png",message='Image not uploaded',show=True)
         return jsonify({'error': 'Invalid or no file selected'}), 400
 
 
