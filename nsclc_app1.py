@@ -7,6 +7,7 @@ from keras.applications.mobilenet_v2 import preprocess_input
 import numpy as np
 import PIL
 import requests
+import base64
 
 app = Flask(__name__, template_folder='templates')
 
@@ -52,21 +53,22 @@ def makePredictions(img_path):
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    # Check if the 'img' field is present in the request
-    if request.files['img'] != "":
-        img_file = request.files['img']
+    if(request.method=='POST'):
+        # Check if the 'img' field is present in the request
+        if request.files['img'] != "":
+            img_file = base64.b64decode(request.files['img'])
 
-        # Save the image to the static folder
-        filename = img_file.filename
-        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        img_file.save(image_path)
+            # Save the image to the static folder
+            filename = img_file.filename
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            img_file.save(image_path)
 
-        # Perform predictions
-        predictions = makePredictions(image_path)
+            # Perform predictions
+            predictions = makePredictions(os.path.join(app.config['UPLOAD_FOLDER'],filename))
 
-        return jsonify({'filename': filename, 'message': predictions, 'show': True})
+            return jsonify({'message': predictions, 'show': True})
 
-    return jsonify({'error': 'Invalid or no file selected'}), 400
+        return jsonify({'error': 'Invalid or no file selected'}), 400
 
 
 if __name__ == "__main__":
