@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import tensorflow as tf
 from keras.models import load_model
 from keras.preprocessing import image
@@ -50,24 +50,24 @@ def makePredictions(img_path):
 
     return result
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['POST'])
 def home():
-    if request.method == 'POST':
-        if request.files['img']!='':
-            f = request.files['img']
-            filename = f.filename
+    # Check if the 'img' field is present in the request
+    if request.files['img'] != "":
+        img_file = request.files['img']
 
-            if not filename:
-                return render_template('home.html', filename="unnamed.png", message="No file selected")
+        # Save the image to the static folder
+        filename = img_file.filename
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        img_file.save(image_path)
 
-            f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            predictions = makePredictions(image_path)
+        # Perform predictions
+        predictions = makePredictions(image_path)
 
-            return render_template('home.html', filename=filename, message=predictions, show=True)
+        return jsonify({'filename': filename, 'message': predictions, 'show': True})
 
-    return render_template('home.html', filename='unnamed.png')
+    return jsonify({'error': 'Invalid or no file selected'}), 400
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
