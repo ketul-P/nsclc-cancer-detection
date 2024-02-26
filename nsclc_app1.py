@@ -6,6 +6,7 @@ from keras.preprocessing import image
 from keras.applications.mobilenet_v2 import preprocess_input
 import numpy as np
 import PIL
+import requests
 
 app = Flask(__name__, template_folder='templates')
 
@@ -19,7 +20,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 img_size = (224, 224)
 
 # Function to preprocess the image before feeding it to the model
-def preprocess_image(img_path):
+def preprocessImage(img_path):
     img = image.load_img(img_path, target_size=img_size)
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
@@ -28,11 +29,11 @@ def preprocess_image(img_path):
 
 
 
-def make_predictions(img_path):
+def makePredictions(img_path):
     '''
     Method to predict based on the image uploaded
     '''
-    processed_img = preprocess_image(img_path)
+    processed_img = preprocessImage(img_path)
     predictions = model.predict(processed_img)
     prediction = int(np.argmax(predictions))
 
@@ -49,38 +50,23 @@ def make_predictions(img_path):
 
     return result
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    return render_template('index.html')
+    if request.method == 'POST':
+        if request.files['img']!='':
+            f = request.files['img']
+            filename = f.filename
 
-@app.route('/', methods=['POST'])
-def predict():
-    try:
-        f = request.files['img']
-        print(f)
-        # Check if the file is an allowed type (you might want to customize this)
-        if f:
-            # Save the uploaded image to a temporary folder
-            filename = 'uploaded_image.jpeg'
+            if not filename:
+                return render_template('home.html', filename="unnamed.png", message="No file selected")
 
             f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            predictions = makePredictions(image_path)
 
-            # Perform diagnosis on the uploaded image
-            predictions = make_predictions(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return render_template('home.html', filename=filename, message=predictions, show=True)
 
-            if predictions is None:
-                message = "No image"
-            else:
-                message = predictions
-
-        else:
-            message = "Invalid file type. Please upload a valid image."
-
-    except Exception as e:
-        message = f"An error occurred: {str(e)}"
-
-    return render_template('index.html', message=message, show=True)
-
+    return render_template('home.html', filename='unnamed.png')
 
 
 if __name__ == "__main__":

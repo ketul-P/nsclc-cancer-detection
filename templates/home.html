@@ -61,11 +61,6 @@
             margin: 5px;
         }
 
-        button:disabled {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-        }
-
     </style>
 </head>
 
@@ -74,61 +69,16 @@
 
     <h3>Please upload the patient's CT scan</h3>
 
-    <script>
-   
-         function displayImage() {
-            var input = document.getElementById('imageInput');
-            var container = document.getElementById('imageContainer');
-
-            if (input.files.length > 0) {
-                var file = input.files[0];
-
-                container.style.backgroundImage = 'url(' + URL.createObjectURL(file) + ')';
-                container.style.backgroundSize = 'cover';
-                container.style.backgroundPosition = 'center';
-                disableButtons(false);
-
-            } else {
-                container.style.backgroundImage = '';
-                disableButtons(true);
-            }
-        }
-
-        function disableButtons(boolVal) {
-            var clearImageBtn = document.getElementById('clearImage');
-            var performDiagnosisBtn = document.getElementById('performDiagnosis');
-
-            clearImageBtn.setAttribute('disabled', boolVal);
-            performDiagnosisBtn.setAttribute('disabled', boolVal);
-
-            if (boolVal) {
-                document.getElementById('imageStatus').textContent = "No image selected";
-            }
-        }
-
-        function clearImage() {
-            var container = document.getElementById('imageContainer');
-            container.style.backgroundImage = '';
-            disableButtons(true);
-        }
-
-        function performDiagnosis() {
-            alert('Performing diagnosis!');
-            // You may add further functionality for diagnosis here
-        }
-    </script>
-
     <form action="/" method="post" id="imageForm" enctype="multipart/form-data">
         <label for="imageInput">Choose File</label>
-        <input type="file" name="img" id="imageInput" accept="image/*" onchange="displayImage()">
+        <input type="file" name="img" id="imageInput" accept="image/*">
 
         <div id="imageContainer">
             <p id="imageStatus">No image selected.</p>
         </div>
 
         <div id="buttons">
-            <button type="button" id="clearImage" disabled>Clear Image</button>
-            <button type="button" id="performDiagnosis" name="perform_Diagnosis" disabled>Perform Diagnosis</button>
+            <button type="submit">Submit</button>
         </div>
 
         <div id="output">
@@ -136,6 +86,23 @@
             <span id="predictionMessage">{{ message }}</span>
         </div>
     </form>
+
+    <script>
+        var input = document.getElementById('imageInput');
+        var container = document.getElementById('imageContainer');
+
+        input.addEventListener('change', function () {
+            if (input.files.length > 0) {
+                var file = input.files[0];
+
+                container.style.backgroundImage = 'url(' + URL.createObjectURL(file) + ')';
+                container.style.backgroundSize = 'cover';
+                container.style.backgroundPosition = 'center';
+            } else {
+                container.style.backgroundImage = '';
+            }
+        });
+    </script>
 
 </body>
 
