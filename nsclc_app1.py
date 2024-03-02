@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 import tensorflow as tf
 from keras.models import load_model
 from keras.preprocessing import image
@@ -8,8 +9,11 @@ import numpy as np
 import PIL
 import requests
 import base64
+from flask_cors import CORS  
 
 app = Flask(__name__, template_folder='templates')
+CORS(app)
+
 
 model_file = "best_model.h5"
 model = load_model(model_file)
