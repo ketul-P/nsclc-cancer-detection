@@ -12,7 +12,7 @@ import base64
 from flask_cors import CORS  
 
 app = Flask(__name__, template_folder='templates')
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 model_file = "best_model.h5"
@@ -73,8 +73,9 @@ def home():
             return jsonify({'message': predictions, 'show': True})
 
         render_template('home.html',filename="unnamed.png",message='Image not uploaded',show=True)
-        return jsonify({'error': 'Invalid or no file selected'}), 400
-
-
+        return jsonify({'Error': 'Image not uploaded'}), 400
+      
+    return jsonify({'Error': 'Invalid Request'}), 400  
+    
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
