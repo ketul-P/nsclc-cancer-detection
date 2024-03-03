@@ -12,7 +12,7 @@ import base64
 from flask_cors import CORS  
 
 app = Flask(__name__, template_folder='templates')
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
 
 
 model_file = "best_model.h5"
@@ -78,4 +78,4 @@ def home():
     return jsonify({'Error': 'Invalid Request'}), 400  
     
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
+    sapp.run(debug=True, host='0.0.0.0')
